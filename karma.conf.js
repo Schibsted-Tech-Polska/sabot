@@ -16,6 +16,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'bower_components/chai/chai.js',
+      'bower_components/jquery/dist/jquery.js',
       'dist/sabot.js',
       'test/helpers/*.js',
       'test/*.js'

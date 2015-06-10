@@ -21,6 +21,7 @@
     "tests"
   ],
   "devDependencies": {
-    "chai": "~3.0.0"
+    "chai": "~3.0.0",
+    "jquery": "~2.1.4"
   }
 }
