@@ -5,11 +5,13 @@ var gulp = require('gulp');
 gulp.task('default', ['build-distribution']);
 
 gulp.task('build-distribution', function() {
-    var concat = require('gulp-concat');
+  var browserify = require('browserify');
+  var source = require('vinyl-source-stream');
 
-    // production version
-    gulp.src([
-      "lib/index.js"
-    ]).pipe(concat('sabot.js'))
-      .pipe(gulp.dest('dist/'));
+  // production version
+  return browserify({
+    entries: 'lib/index.js'
+  }).bundle()
+    .pipe(source('sabot.js'))
+    .pipe(gulp.dest('./dist'));
 });

@@ -8,13 +8,14 @@
     "test": "gulp && ./node_modules/karma/bin/karma start --single-run"
   },
   "devDependencies": {
+    "browserify": "^10.2.4",
     "gulp": "*",
-    "gulp-concat": "*",
     "karma": "^0.12.24",
     "karma-chrome-launcher": "^0.1.5",
     "karma-firefox-launcher": "^0.1.3",
     "karma-mocha": "^0.1.10",
     "karma-safari-launcher": "^0.1.1",
-    "mocha": "^2.0.1"
+    "mocha": "^2.0.1",
+    "vinyl-source-stream": "^1.1.0"
   }
 }
