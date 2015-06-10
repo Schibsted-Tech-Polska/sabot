@@ -1,0 +1,26 @@
+{
+  "name": "sabot",
+  "version": "1.0.0",
+  "authors": [
+    "Jakub Wasilewski <wasyl@wasyl.eu>"
+  ],
+  "description": "Simple A/B testing, purely frontend with reporting to any backend.",
+  "main": "lib/index.js",
+  "keywords": [
+    "tests",
+    "a/b",
+    "ab",
+    "split"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "chai": "~3.0.0"
+  }
+}
