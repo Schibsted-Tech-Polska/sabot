@@ -2,7 +2,7 @@ describe("Test parsing", function() {
   var testHTML = "<div>" +
     "<meta type='ab-test' " +
       "data-name='very-important-test' " +
-      "data-variants='pretty(90%),ugly-1(5%),ugly-2(5%)' " +
+      "data-variants='pretty(75%),ugly-1(12.5%),ugly-2(12.5%)' " +
       "data-conversion-event='a|click'>" +
     "<meta type='ab-test' " +
       "data-name='second-test' " +
@@ -24,17 +24,17 @@ describe("Test parsing", function() {
   it("should parse test variants with weights correctly", function() {
     var importantVariants = tests[0].variants;
     assert.deepEqual(importantVariants, [
-      {name: 'pretty', weight: 90},
-      {name: 'ugly-1', weight: 5},
-      {name: 'ugly-2', weight: 5}
+      {name: 'pretty', weight: 0.75},
+      {name: 'ugly-1', weight: 0.125},
+      {name: 'ugly-2', weight: 0.125}
     ]);
   });
 
   it("should assume equal weights for variants if none are provided", function() {
     var secondVariants = tests[1].variants;
     assert.deepEqual(secondVariants, [
-      {name: 'first', weight: 1},
-      {name: 'second', weight: 1}
+      {name: 'first', weight: 0.5},
+      {name: 'second', weight: 0.5}
     ]);
   });
 
