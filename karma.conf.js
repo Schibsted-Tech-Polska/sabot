@@ -18,6 +18,7 @@ module.exports = function(config) {
       'bower_components/chai/chai.js',
       'bower_components/jquery/dist/jquery.js',
       'dist/sabot.js',
+      'test/html/*.html',
       'test/helpers/*.js',
       'test/*.js'
     ],
@@ -31,6 +32,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      '**/*.html': ['html2js']
     },
 
 
