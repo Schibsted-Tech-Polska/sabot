@@ -48,5 +48,21 @@ describe("Test parsing", function() {
 
   it("should report incorrect data-conversion-event values");
   it("should report incorrect data-variants values");
-  it("should not care about whitespace in variants")
+  
+  it("should not care about whitespace in variants", function() {
+    var testHTML = "<div>" +
+      "<meta type='ab-test' " +
+        "data-name='very-important-test' " +
+        "data-variants='a (25% ), b ( 25 % ),c(50%)' " +
+        "data-conversion-event='a|click'>" +
+      "</div>";
+    var $test = $(testHTML);
+    var tests = sabot.parseTests($test);
+
+    assert.deepEqual(tests[0].variants, [
+      {name: 'a', weight: 0.25},
+      {name: 'b', weight: 0.25},
+      {name: 'c', weight: 0.5}
+    ]);
+  });
 });

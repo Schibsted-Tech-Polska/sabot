@@ -1,0 +1,27 @@
+<div class="fixture-two-tests">
+  <!-- tests -->
+  <meta type="ab-test" data-name="colorful"
+        data-variants="red, green"
+        data-conversion-event=".button|click">
+  <meta type="ab-test" data-name="sizes"
+        data-variants="size-12(50%),size-10(25%),size-14(25%)"
+        data-conversion-event="a|click">
+
+  <div data-ab="colorful:red">
+    <a class="button" id="red" style="color: red">First</a>
+  </div>
+  <div data-ab="colorful:green">
+    <a class="button" id="green" style="color: green">Second</a>
+  </div>
+
+  <div data-ab="sizes:size-12">
+    <a id="s12" style="font-size: 12px">Twelve</a>
+  </div>
+  <div data-ab="sizes:size-10">
+    <a id="s10" style="font-size: 10px">Ten</a>
+  </div>
+  <div data-ab="sizes:size-14">
+    <a id="s14" style="font-size: 14px">Fourteen</a>
+  </div>
+
+</div>
