@@ -4,22 +4,22 @@ describe("Sabot", function() {
     var $root = $(html);
 
     // set up a predictable environment and capturing
-    var storedInfo = {
+    var storage = mockStorage({
       sabotTestAssignments: {
         'colorful': 'green'
       }
-    };
-    var randomness = [0.65];
-    var choices = {};
+    });
+    var randomness = mockRandom([0.65]);
+    var reportedChoices = {};
     function recordChoices(test, variant) {
-      choices[test] = variant;
+      reportedChoices[test] = variant;
     }
 
     // process the page
     sabot({
       rootElement: $root,
-      storage: mockStorage(storedInfo),
-      randomizer: mockRandom(randomness),
+      storage: storage,
+      randomizer: randomness,
 
       onVariantChosen: recordChoices
     });
@@ -34,6 +34,18 @@ describe("Sabot", function() {
       assert.equal($root.find('#s12,#s14').length, 0);
     });
 
+    it("should save the assignments in local storage", function() {
+      assert.deepEqual(storage.getItem('sabotTestAssignments'), {
+        'colorful': 'green',
+        'sizes': 'size-10'
+      });
+    });
 
+    it("should report the loaded variants via the callback provided", function() {
+      assert.deepEqual(reportedChoices, {
+        'colorful': 'green',
+        'sizes': 'size-10'
+      });
+    });
   });
 });
