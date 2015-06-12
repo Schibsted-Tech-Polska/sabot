@@ -15,7 +15,8 @@ describe("Conversions", function() {
     var storage = mockStorage({});
     sabot.registerConversionListeners($root, tests, storage);
 
-    $root.find(".button").trigger('click');
+    $('body').append($root);
+    $root.find(".button").get(0).click();
 
     assert.deepEqual(storage.getItem(CONVERSIONS), [
       {test: 'colorful', variant: 'red'}
@@ -32,9 +33,8 @@ describe("Conversions", function() {
     });
     sabot.registerConversionListeners($root, tests, storage);
 
-    $root.find(".button").trigger('click');
-    $root.find(".button").trigger('click');
-    $root.find(".button").trigger('click');
+    $('body').append($root);
+    $root.find(".button").get(0).click();
 
     assert.deepEqual(storage.getItem('sabotOutstandingConversions'), [
       {test: 'earlier', variant: 'conversion'},
@@ -48,9 +48,37 @@ describe("Conversions", function() {
     var storage = mockStorage({});
     sabot.registerConversionListeners($root, tests, storage);
 
-    $root.find(".button").trigger('click');
-    $root.find(".button").trigger('click');
-    $root.find(".button").trigger('click');
+    $('body').append($root);
+    $root.find(".button").get(0).click();
+    $root.find(".button").get(0).click();
+    $root.find(".button").get(0).click();
+
+    assert.equal(storage.getItem('sabotOutstandingConversions').length, 1);
+  });
+
+  it("should not report conversion from non-matching elements", function() {
+    var $root = $(testHTML);
+
+    var storage = mockStorage({});
+    sabot.registerConversionListeners($root, tests, storage);
+
+    $root.find(".ignore-me").trigger('click');
+
+    assert(!storage.getItem('sabotOutstandingConversions'));
+  });
+
+  it("should catch the conversion even if .stopPropagation() is used", function() {
+    var $root = $(testHTML);
+
+    var storage = mockStorage({});
+    sabot.registerConversionListeners($root, tests, storage);
+
+    $root.find(".button").click(function(evt) {
+      evt.stopPropagation();
+    });
+
+    $('body').append($root);
+    $root.find(".button").get(0).click();
 
     assert.equal(storage.getItem('sabotOutstandingConversions').length, 1);
   });

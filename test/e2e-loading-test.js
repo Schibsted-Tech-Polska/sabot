@@ -1,7 +1,9 @@
 describe("Sabot", function() {
   describe("when working on a page with two A/B tests", function() {
+    // create some test markup
     var html = window.__html__['test/html/two-tests.html'];
     var $root = $(html);
+    $('body').append($root);
 
     // set up a predictable environment and capturing
     var storage = mockStorage({
@@ -31,7 +33,7 @@ describe("Sabot", function() {
     });
 
     // trigger a conversion
-    $root.find('#s10').trigger('click');
+    $root.find('#s10').get(0).click();
 
     // check!
 

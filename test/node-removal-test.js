@@ -12,4 +12,6 @@ describe("Removal of unselected variants", function() {
   it("should keep selected nodes", function() {
     assert.equal($root.find('#green').length, 1);
   });
+
+  it("should emit a warning when no node matches");
 });
