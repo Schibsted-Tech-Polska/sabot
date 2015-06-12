@@ -7,12 +7,17 @@ describe("Sabot", function() {
     var storage = mockStorage({
       sabotTestAssignments: {
         'colorful': 'green'
-      }
+      },
+      sabotOutstandingConversions: [
+        {test: 'converted', variant: 'blah'}
+      ]
     });
     var randomness = mockRandom([0.65]);
-    var reportedChoices = {};
-    function recordChoices(test, variant) {
-      reportedChoices[test] = variant;
+    var reportedChoices = {}, reportedConversions = {};
+    function record(where) {
+      return function(test, variant) {
+        where[test] = variant;
+      }
     }
 
     // process the page
@@ -21,8 +26,14 @@ describe("Sabot", function() {
       storage: storage,
       randomizer: randomness,
 
-      onVariantChosen: recordChoices
+      onVariantChosen: record(reportedChoices),
+      onConversion: record(reportedConversions)
     });
+
+    // trigger a conversion
+    $root.find('#s10').trigger('click');
+
+    // check!
 
     it('should just have the "green" version in HTML for the first test', function() {
       assert.equal($root.find('#green').length, 1);
@@ -46,6 +57,18 @@ describe("Sabot", function() {
         'colorful': 'green',
         'sizes': 'size-10'
       });
+    });
+
+    it("should report the outstanding conversions via the callback provided", function() {
+      assert.deepEqual(reportedConversions, {
+        'converted': 'blah'
+      });
+    });
+
+    it("should record the new conversion in local storage", function() {
+      assert.deepEqual(storage.getItem('sabotOutstandingConversions'), [
+        {test: 'sizes', variant: 'size-10'}
+      ]);
     });
   });
 });
