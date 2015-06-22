@@ -2,7 +2,7 @@
   "name": "sabot",
   "version": "1.0.0",
   "authors": [
-    "Jakub Wasilewski <wasyl@wasyl.eu>"
+    "Jakub Wasilewski <jakub.wasilewski@schibsted.pl>"
   ],
   "description": "Simple A/B testing, purely frontend with reporting to any backend.",
   "main": "lib/index.js",
@@ -17,11 +17,11 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "test"
   ],
   "devDependencies": {
     "chai": "~3.0.0",
     "jquery": "~2.1.4"
-  }
+  },
+  "repository": "Schibsted-Tech-Polska/sabot"
 }
