@@ -16,13 +16,13 @@ JQuery has to be available in the environment for sabot to work.
 
 You need the sabot.js file - the easiest way is using bower:
 
-```
+```sh
 # bower install --save sabot
 ```
 
 And in your HTML:
 
-```
+```html
 <script src="bower_components/sabot/dist/sabot.js"></script>
 ```
 
@@ -63,7 +63,7 @@ Sabot can report to any back-end. It accepts two callbacks - one will be called 
 when a successful conversion is recorded. It expects the callbacks to return a promise/deferred, so you can return the
 result of `$.ajax()` directly:
 
-```javascript```
+```javascript
 sabot({
   onVariantChosen: function(test, variant) {
     var url = "http://my-backend.example.com/?test=" + test + "&variant=" + variant;
