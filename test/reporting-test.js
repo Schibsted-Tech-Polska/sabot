@@ -11,13 +11,13 @@ describe("Reporting ", function() {
       gatheredInfo[test] = variant;
     }
 
-    sabot.reportThroughCallbacks(assignments, mockStorage(), loadCallback, function(){});
+    sabot.reportThroughCallbacks(assignments, mockObjectStorage({}), loadCallback, function(){});
 
     assert.deepEqual(gatheredInfo, assignments);
   });
 
   it("should report outstanding conversions", function() {
-    var storage = mockStorage({
+    var storage = mockObjectStorage({
       'sabotOutstandingConversions': [
         {test: '1', variant: 'b'}
       ]
@@ -34,7 +34,7 @@ describe("Reporting ", function() {
   });
 
   it("should remove successfully reported conversions from storage", function() {
-    var storage = mockStorage({
+    var storage = mockObjectStorage({
       'sabotOutstandingConversions': [
         {test: '1', variant: 'b'}
       ]
@@ -50,7 +50,7 @@ describe("Reporting ", function() {
   });
 
   it("should not remove conversions if reporting fails", function() {
-    var storage = mockStorage({
+    var storage = mockObjectStorage({
       'sabotOutstandingConversions': [
         {test: '1', variant: 'b'}
       ]

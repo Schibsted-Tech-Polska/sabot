@@ -2,7 +2,7 @@ window.mockStorage = function(initial) {
   initial = initial || {};
   for (var prop in initial) {
     if (typeof(initial[prop]) !== 'string')
-      initial[prop] = JSON.stringify(initial[prop])
+      initial[prop] = JSON.stringify(initial[prop]);
   }
 
   var store = initial;

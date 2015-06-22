@@ -12,7 +12,7 @@ describe("Conversions", function() {
   it("should be registered when a matching selector/event pair occurs", function() {
     var $root = $(testHTML);
 
-    var storage = mockStorage({});
+    var storage = mockObjectStorage({});
     sabot.registerConversionListeners($root, tests, storage);
 
     $('body').append($root);
@@ -26,7 +26,7 @@ describe("Conversions", function() {
   it("should be appended to an existing list", function() {
     var $root = $(testHTML);
 
-    var storage = mockStorage({
+    var storage = mockObjectStorage({
       sabotOutstandingConversions: [
         {test: 'earlier', variant: 'conversion'}
       ]
@@ -45,7 +45,7 @@ describe("Conversions", function() {
   it("should report a conversion just once per test", function() {
     var $root = $(testHTML);
 
-    var storage = mockStorage({});
+    var storage = mockObjectStorage({});
     sabot.registerConversionListeners($root, tests, storage);
 
     $('body').append($root);
@@ -59,7 +59,7 @@ describe("Conversions", function() {
   it("should not report conversion from non-matching elements", function() {
     var $root = $(testHTML);
 
-    var storage = mockStorage({});
+    var storage = mockObjectStorage({});
     sabot.registerConversionListeners($root, tests, storage);
 
     $root.find(".ignore-me").trigger('click');
@@ -70,7 +70,7 @@ describe("Conversions", function() {
   it("should catch the conversion even if .stopPropagation() is used", function() {
     var $root = $(testHTML);
 
-    var storage = mockStorage({});
+    var storage = mockObjectStorage({});
     sabot.registerConversionListeners($root, tests, storage);
 
     $root.find(".button").click(function(evt) {

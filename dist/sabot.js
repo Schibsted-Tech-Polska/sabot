@@ -99,8 +99,7 @@ ObjectStorage.prototype = {
     return this.storage.setItem(key, JSON.stringify(object));
   },
   getItem: function(key) {
-    var storedString = this.storage.getItem(key).toString();
-    console.log("Got back:", storedString);
+    var storedString = this.storage.getItem(key);
     if (storedString) {
       try {
         return JSON.parse(storedString);
@@ -277,7 +276,5 @@ function reportThroughCallbacks(assignments, storage, onVariantChosen, onConvers
     }
   }
 }
-
-
 
 },{"./constants":2}]},{},[3]);

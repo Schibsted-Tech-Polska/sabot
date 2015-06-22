@@ -22,7 +22,7 @@ describe("Assigning user to variants", function() {
 
   it("should assign according to weights correctly", function() {
     var random = mockRandom([0.9, 0.1]);
-    var storage = mockStorage({});
+    var storage = mockObjectStorage({});
     var assignments = sabot.assignUserToVariants(exampleTests, storage, random);
     assert.deepEqual(assignments, {
       'test-1': '1c',
@@ -32,7 +32,7 @@ describe("Assigning user to variants", function() {
 
   it("should use stored values and randomize those that are missing", function() {
     var random = mockRandom([0.6]);
-    var storage = mockStorage({
+    var storage = mockObjectStorage({
       sabotTestAssignments: {
         'test-2': '2a'
       }
@@ -46,7 +46,7 @@ describe("Assigning user to variants", function() {
 
   it("should save assigned values back into storage", function() {
     var random = mockRandom([0.6]);
-    var storage = mockStorage({
+    var storage = mockObjectStorage({
       sabotTestAssignments: {
         'test-2': '2a'
       }
@@ -62,7 +62,7 @@ describe("Assigning user to variants", function() {
 
   it("should re-randomize user if the stored variant is absent", function() {
     var random = mockRandom([0.6, 0.5]);
-    var storage = mockStorage({
+    var storage = mockObjectStorage({
       sabotTestAssignments: {
         'test-1': 'bogus'
       }
