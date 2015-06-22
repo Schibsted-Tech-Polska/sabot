@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "start": "./node_modules/karma/bin/karma start",
-    "test": "gulp && ./node_modules/karma/bin/karma start --single-run"
+    "test": "gulp && ./node_modules/karma/bin/karma --browsers Firefox start --single-run",
+    "test-all": "gulp && ./node_modules/karma/bin/karma start --single-run"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
