@@ -20,7 +20,7 @@ module.exports = function(config) {
       'dist/sabot.js',
       'test/html/*.html',
       'test/helpers/*.js',
-      'test/*.js'
+      'test/e2e-*.js'
     ],
 
 

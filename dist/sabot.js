@@ -45,6 +45,8 @@ module.exports.STORED_CONVERSIONS = 'sabotOutstandingConversions';
 
 },{}],3:[function(require,module,exports){
 window.sabot = function(){
+  var ObjectStorage = main.ObjectStorage = require('./object-storage');
+
   var parseTests = main.parseTests = require('./parse-tests');
   var assignUserToVariants = main.assignUserToVariants = require('./assign-user-to-variants');
   var removeUnselectedVariants = main.removeUnselectedVariants = require('./remove-unselected-variants');
@@ -68,7 +70,7 @@ window.sabot = function(){
   function sanitizeConfig(cfg) {
     return {
       rootElement: cfg.rootElement || 'html',
-      storage: cfg.storage || window.localStorage,
+      storage: new ObjectStorage(cfg.storage || window.localStorage),
       randomizer: cfg.randomizer || Math.random.bind(Math),
 
       onVariantChosen: cfg.onVariantChosen || pleaseRegister('onVariantChosen'),
@@ -84,7 +86,35 @@ window.sabot = function(){
 
 }();
 
-},{"./assign-user-to-variants":1,"./parse-tests":4,"./register-conversion-listeners":5,"./remove-unselected-variants":6,"./report-through-callbacks":7}],4:[function(require,module,exports){
+},{"./assign-user-to-variants":1,"./object-storage":4,"./parse-tests":5,"./register-conversion-listeners":6,"./remove-unselected-variants":7,"./report-through-callbacks":8}],4:[function(require,module,exports){
+// Implements storing JS objects inside string-based browser storage.
+
+module.exports = ObjectStorage;
+
+function ObjectStorage(storage) {
+  this.storage = storage;
+}
+ObjectStorage.prototype = {
+  setItem: function(key, object) {
+    return this.storage.setItem(key, JSON.stringify(object));
+  },
+  getItem: function(key) {
+    var storedString = this.storage.getItem(key).toString();
+    console.log("Got back:", storedString);
+    if (storedString) {
+      try {
+        return JSON.parse(storedString);
+      } catch(e) {
+        // parsing error? assume undefined
+        return undefined;
+      }
+    } else {
+      return undefined;
+    }
+  }
+};
+
+},{}],5:[function(require,module,exports){
 module.exports = parseTests;
 
 var WEIGHT_REGEX = /\((.*?)\)/;
@@ -142,7 +172,7 @@ function trim(str) {
   return str.replace(/^\s+|\s+$/g, '');
 }
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = registerConversionListeners;
 
 var STORED_CONVERSIONS = require('./constants').STORED_CONVERSIONS;
@@ -203,7 +233,7 @@ function domBinder($node, eventName) {
   }
 }
 
-},{"./constants":2}],6:[function(require,module,exports){
+},{"./constants":2}],7:[function(require,module,exports){
 module.exports = removeUnselectedVariants;
 
 function removeUnselectedVariants($root, assignments) {
@@ -218,7 +248,7 @@ function removeUnselectedVariants($root, assignments) {
   });
 }
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = reportThroughCallbacks;
 
 var STORED_CONVERSIONS = require('./constants').STORED_CONVERSIONS;
@@ -241,7 +271,7 @@ function reportThroughCallbacks(assignments, storage, onVariantChosen, onConvers
       // remove the conversion from the outstanding list
       var conversions = storage.getItem(STORED_CONVERSIONS) || [];
       var filtered = conversions.filter(function(c) {
-        return c != conversionToRemove;
+        return JSON.stringify(c) != JSON.stringify(conversionToRemove);
       });
       storage.setItem(STORED_CONVERSIONS, filtered);
     }

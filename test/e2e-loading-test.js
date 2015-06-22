@@ -48,7 +48,7 @@ describe("Sabot", function() {
     });
 
     it("should save the assignments in local storage", function() {
-      assert.deepEqual(storage.getItem('sabotTestAssignments'), {
+      assert.deepEqual(JSON.parse(storage.getItem('sabotTestAssignments')), {
         'colorful': 'green',
         'sizes': 'size-10'
       });
@@ -68,7 +68,9 @@ describe("Sabot", function() {
     });
 
     it("should record the new conversion in local storage", function() {
-      assert.deepEqual(storage.getItem('sabotOutstandingConversions'), [
+      var conversions = JSON.parse(storage.getItem('sabotOutstandingConversions'));
+      console.log(conversions);
+      assert.deepEqual(conversions, [
         {test: 'sizes', variant: 'size-10'}
       ]);
     });
