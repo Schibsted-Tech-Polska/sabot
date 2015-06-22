@@ -56,13 +56,25 @@ describe("Conversions", function() {
     assert.equal(storage.getItem('sabotOutstandingConversions').length, 1);
   });
 
+  it("should report conversion from child element clicks", function() {
+    var $root = $(testHTML);
+
+    var storage = mockObjectStorage({});
+    sabot.registerConversionListeners($root, tests, storage);
+
+    $root.find(".button-child").get(0).click();
+
+    assert(storage.getItem('sabotOutstandingConversions'));
+    assert.equal(storage.getItem('sabotOutstandingConversions').length, 1);
+  });
+
   it("should not report conversion from non-matching elements", function() {
     var $root = $(testHTML);
 
     var storage = mockObjectStorage({});
     sabot.registerConversionListeners($root, tests, storage);
 
-    $root.find(".ignore-me").trigger('click');
+    $root.find(".ignore-me").get(0).click();
 
     assert(!storage.getItem('sabotOutstandingConversions'));
   });

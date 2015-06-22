@@ -201,9 +201,10 @@ function registerConversionListeners($root, tests, storage) {
 
 function createConversionCallback(selector, test, variant, eventBinder, storage) {
   var callback = function(evt) {
-    // filter - only elements we're interested in
+    // filter - only elements that match our selector or are contained within such a matching element
     var $target = $(evt.target);
-    if (!$target.is(selector)) return;
+    var match = $target.closest(selector);
+    if (!match.length) return;
 
     // conversions are just saved to local storage, and sent during page load of the next page
     var conversionData = {test: test, variant: variant};
