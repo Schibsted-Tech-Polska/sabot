@@ -72,4 +72,19 @@ describe("Assigning user to variants", function() {
 
     assert.equal(assignments['test-1'], '1b');
   });
+
+  it("should not return assignments for tests that are not on the page", function() {
+    var random = mockRandom([]);
+    var storage = mockObjectStorage({
+      sabotTestAssignments: {
+        'test-1': '1b',
+        'test-2': '2b',
+        'test-3': '3d'
+      }
+    });
+
+    var assignments = sabot.assignUserToVariants(exampleTests, storage, random);
+
+    assert(!assignments['test-3']);
+  });
 });

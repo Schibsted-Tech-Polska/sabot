@@ -21,7 +21,13 @@ function assignUserToVariants(tests, storage, randomizer) {
     assignments[test.name] = pickVariantRandomly(test.variants, randomizer);
   });
   storage.setItem(STORED_ASSIGNMENTS, assignments);
-  return assignments;
+
+  // filter so only assignments for the tests existing on the page are returned
+  var filtered = {};
+  tests.map(function(test) {
+    filtered[test.name] = assignments[test.name];
+  });
+  return filtered;
 }
 
 // Randomly picks one of the variants, using probabilities defined by weights. All the weights must sum up to 1.
