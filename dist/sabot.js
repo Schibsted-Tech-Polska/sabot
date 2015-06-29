@@ -98,7 +98,7 @@ window.sabot = function(){
 
     var tests = parseTests($root);
     var assignments = assignUserToVariants(tests, cfg.storage, cfg.randomizer, cfg.expirationTime);
-    removeUnselectedVariants($root, assignments);
+    removeUnselectedVariants($root, assignments, cfg.selectedClass);
     reportThroughCallbacks(assignments, cfg.storage, cfg.onVariantChosen, cfg.onConversion);
     registerConversionListeners($root, tests, cfg.storage);
   }
@@ -106,9 +106,12 @@ window.sabot = function(){
   function sanitizeConfig(cfg) {
     return {
       rootElement: cfg.rootElement || 'html',
+
       storage: new ObjectStorage(cfg.storage || window.localStorage),
       randomizer: cfg.randomizer || Math.random.bind(Math),
+
       expirationTime: 7 * 24 * 3600,
+      selectedClass: 'ab-selected',
 
       onVariantChosen: cfg.onVariantChosen || pleaseRegister('onVariantChosen'),
       onConversion: cfg.onConversion || pleaseRegister('onConversion')
@@ -273,15 +276,19 @@ function domBinder($node, eventName) {
 },{"./constants":2}],7:[function(require,module,exports){
 module.exports = removeUnselectedVariants;
 
-function removeUnselectedVariants($root, assignments) {
+function removeUnselectedVariants($root, assignments, selectedClass) {
   // remove everything that doesn't match a test
   var candidates = $root.find('*[data-ab]');
   candidates.toArray().map(function(candidate) {
     var $candidate = $(candidate);
     var abInfo = $candidate.data('ab').split(":");
     var abTest = abInfo[0], abVariant = abInfo[1];
-    if (assignments[abTest] != abVariant)
+
+    if (assignments[abTest] == abVariant) {
+      $candidate.addClass(selectedClass);
+    } else {
       $candidate.remove();
+    }
   });
 }
 

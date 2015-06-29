@@ -48,6 +48,11 @@ describe("Sabot", function() {
       assert.equal($root.find('#s12,#s14').length, 0);
     });
 
+    it('should mark selected variants with a class', function() {
+      assert.ok($root.find('*[data-ab="colorful:green"]').is('.ab-selected'));
+      assert.ok($root.find('*[data-ab="sizes:size-10"]').is('.ab-selected'));
+    });
+
     it("should save the assignments in local storage", function() {
       var stored = JSON.parse(storage.getItem('sabotTestAssignments'));
       assert.equal(stored['colorful'].pick, 'green');
@@ -71,7 +76,6 @@ describe("Sabot", function() {
 
     it("should record the new conversion in local storage", function() {
       var conversions = JSON.parse(storage.getItem('sabotOutstandingConversions'));
-      console.log(conversions);
       assert.deepEqual(conversions, [
         {test: 'sizes', variant: 'size-10'}
       ]);

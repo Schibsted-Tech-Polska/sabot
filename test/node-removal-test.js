@@ -3,7 +3,7 @@ describe("Removal of unselected variants", function() {
   var $root = $(testHTML);
   var assignments = {colorful: 'green'};
 
-  sabot.removeUnselectedVariants($root, assignments);
+  sabot.removeUnselectedVariants($root, assignments, 'ab-selected');
 
   it("should remove unneeded nodes", function() {
     assert.equal($root.find('#red').length, 0);
@@ -13,5 +13,7 @@ describe("Removal of unselected variants", function() {
     assert.equal($root.find('#green').length, 1);
   });
 
-  it("should emit a warning when no node matches");
+  it("should mark selected containers with a class", function() {
+    assert.ok($root.find('[data-ab="colorful:green"]').is('.ab-selected'));
+  });
 });
