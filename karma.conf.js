@@ -18,7 +18,7 @@ module.exports = function(config) {
       'bower_components/chai/chai.js',
       'bower_components/jquery/dist/jquery.js',
       'dist/sabot.js',
-      'test/html/*.html',
+      'test/html/**/*.html',
       'test/helpers/*.js',
       'test/*.js'
     ],

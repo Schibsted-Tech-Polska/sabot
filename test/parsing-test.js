@@ -46,9 +46,6 @@ describe("Test parsing", function() {
     ]);
   });
 
-  it("should report incorrect data-conversion-event values");
-  it("should report incorrect data-variants values");
-
   it("should not care about whitespace in variants", function() {
     var testHTML = "<div>" +
       "<meta type='ab-test' " +
