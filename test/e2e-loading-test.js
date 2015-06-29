@@ -6,9 +6,10 @@ describe("Sabot", function() {
     $('body').append($root);
 
     // set up a predictable environment and capturing
+    var tomorrow = (new Date()).getTime + 1000 * 3600 * 24;
     var storage = mockStorage({
       sabotTestAssignments: {
-        'colorful': 'green'
+        'colorful': {pick: 'green', expires: tomorrow}
       },
       sabotOutstandingConversions: [
         {test: 'converted', variant: 'blah'}
@@ -48,10 +49,11 @@ describe("Sabot", function() {
     });
 
     it("should save the assignments in local storage", function() {
-      assert.deepEqual(JSON.parse(storage.getItem('sabotTestAssignments')), {
-        'colorful': 'green',
-        'sizes': 'size-10'
-      });
+      var stored = JSON.parse(storage.getItem('sabotTestAssignments'));
+      assert.equal(stored['colorful'].pick, 'green');
+      assert.equal(stored['sizes'].pick, 'size-10');
+      assert.equal(stored['colorful'].expires, tomorrow);
+      assert.ok(stored['sizes'].expires > (new Date()).getTime());
     });
 
     it("should report the loaded variants via the callback provided", function() {
