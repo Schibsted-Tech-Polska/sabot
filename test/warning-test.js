@@ -40,6 +40,19 @@ describe("Warnings", function() {
       var warnings = warningsFor('bad/container.html');
       expectOneWarningIncluding(warnings, "!@#$");
     });
+
+    it("missing callback", function() {
+      var warnings = [];
+      sabot({
+        rootElement: $("<div>"),
+        warningFn: function(warning) {
+          warnings.push(warning);
+        },
+        onVariantChosen: function() {}
+      });
+
+      expectOneWarningIncluding(warnings, "onConversion");
+    })
   });
 });
 

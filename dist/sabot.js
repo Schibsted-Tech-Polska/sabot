@@ -115,13 +115,15 @@ window.sabot = function(){
 
       warningFn: cfg.warningFn || console.log.bind(console),
 
-      onVariantChosen: cfg.onVariantChosen || pleaseRegister('onVariantChosen'),
-      onConversion: cfg.onConversion || pleaseRegister('onConversion')
-    }
+      onVariantChosen: cfg.onVariantChosen || pleaseRegister(cfg, 'onVariantChosen'),
+      onConversion: cfg.onConversion || pleaseRegister(cfg, 'onConversion')
+    };
   }
 
-  function pleaseRegister(functionName) {
-    console.log("No callback was registered for A/B testing - please register '" + functionName + "'.");
+  function pleaseRegister(cfg, functionName) {
+    var warningFn = cfg.warningFn || console.log.bind(console);
+    warningFn("Missing callback for A/B testing - please register '" + functionName + "'.");
+
     return function() {
     }
   }
