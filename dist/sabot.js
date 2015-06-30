@@ -254,7 +254,8 @@ function checkContainerValidity($root, tests, raiseWarning) {
     // check the data-ab value for correctness
     if (parts.length != 2)
       return raiseWarning("Incorrect data-ab value: '" + ab + "'.");
-    var matchingTest = tests[parts[0]];
+    var matchingTest = tests.filter(function(t) { return t.name == parts[0] });
+    matchingTest = matchingTest.length ? matchingTest[0] : false;
     if (!matchingTest)
       return raiseWarning("No matching test defined for data-ab='" + ab + "'.");
     var matchingVariants = matchingTest.variants.filter(function(v) { return v.name == parts[1]; });

@@ -6,6 +6,7 @@ describe("Sabot", function() {
     $('body').append($root);
 
     // set up a predictable environment and capturing
+    var warnings = [];
     var tomorrow = (new Date()).getTime + 1000 * 3600 * 24;
     var storage = mockStorage({
       sabotTestAssignments: {
@@ -29,6 +30,7 @@ describe("Sabot", function() {
       storage: storage,
       randomizer: randomness,
 
+      warningFn: function(w) { warnings.push(w); },
       onVariantChosen: record(reportedChoices),
       onConversion: record(reportedConversions)
     });
@@ -79,6 +81,10 @@ describe("Sabot", function() {
       assert.deepEqual(conversions, [
         {test: 'sizes', variant: 'size-10'}
       ]);
+    });
+
+    it("should not have reported any warnings", function() {
+      assert.deepEqual(warnings, []);
     });
   });
 });
