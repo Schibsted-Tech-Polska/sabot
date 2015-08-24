@@ -113,7 +113,7 @@ window.sabot = function(){
       expirationTime: cfg.expirationTime || 7 * 24 * 3600,
       selectedClass: cfg.selectedClass || 'ab-selected',
 
-      warningFn: cfg.warningFn || console.log.bind(console),
+      warningFn: cfg.warningFn || defaultErrorLogger,
 
       onVariantChosen: cfg.onVariantChosen || pleaseRegister(cfg, 'onVariantChosen'),
       onConversion: cfg.onConversion || pleaseRegister(cfg, 'onConversion')
@@ -121,11 +121,15 @@ window.sabot = function(){
   }
 
   function pleaseRegister(cfg, functionName) {
-    var warningFn = cfg.warningFn || console.log.bind(console);
+    var warningFn = cfg.warningFn;
     warningFn("Missing callback for A/B testing - please register '" + functionName + "'.");
 
     return function() {
     }
+  }
+
+  function defaultErrorLogger(message) {
+    console.log(message);
   }
 
 }();
