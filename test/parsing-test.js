@@ -24,17 +24,17 @@ describe("Test parsing", function() {
   it("should parse test variants with weights correctly", function() {
     var importantVariants = tests[0].variants;
     assert.deepEqual(importantVariants, [
-      {name: 'pretty', weight: 0.75},
-      {name: 'ugly-1', weight: 0.125},
-      {name: 'ugly-2', weight: 0.125}
+      {name: 'pretty', weight: 0.75, conditions: []},
+      {name: 'ugly-1', weight: 0.125, conditions: []},
+      {name: 'ugly-2', weight: 0.125, conditions: []}
     ]);
   });
 
   it("should assume equal weights for variants if none are provided", function() {
     var secondVariants = tests[1].variants;
     assert.deepEqual(secondVariants, [
-      {name: 'first', weight: 0.5},
-      {name: 'second', weight: 0.5}
+      {name: 'first', weight: 0.5, conditions: []},
+      {name: 'second', weight: 0.5, conditions: []}
     ]);
   });
 
@@ -57,9 +57,29 @@ describe("Test parsing", function() {
     var tests = sabot.parseTests($test);
 
     assert.deepEqual(tests[0].variants, [
-      {name: 'a', weight: 0.25},
-      {name: 'b', weight: 0.25},
-      {name: 'c', weight: 0.5}
+      {name: 'a', weight: 0.25, conditions: []},
+      {name: 'b', weight: 0.25, conditions: []},
+      {name: 'c', weight: 0.5, conditions: []}
     ]);
+  });
+
+  it("should parse conditions correctly", function() {
+    var testHTML = '<div><meta type="ab-test" data-name="t" data-variants="a(50%:logged-in),b(25%),c(25%:foo)" data-conversion-event="a|click"></div>';
+    var $test = $(testHTML);
+    var conditions = {
+      'logged-in': function(){ return false; },
+      'foo': function() { return true; }
+    };
+
+    var tests = sabot.parseTests($test, undefined, conditions);
+
+    var parsedConditions = tests[0].variants.map(function(v) { return v.conditions });
+    var aConditions = parsedConditions[0], bConditions = parsedConditions[1], cConditions = parsedConditions[2];
+
+    console.log(parsedConditions);
+
+    assert.deepEqual(aConditions, [conditions['logged-in']]);
+    assert.deepEqual(bConditions, []);
+    assert.deepEqual(cConditions, [conditions.foo]);
   });
 });

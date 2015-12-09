@@ -111,7 +111,7 @@ window.sabot = function(){
 
     var $root = $(cfg.rootElement);
 
-    var tests = parseTests($root, cfg.warningFn);
+    var tests = parseTests($root, cfg.warningFn, cfg.conditions);
     var assignments = assignUserToVariants(tests, cfg.storage, cfg.randomizer, cfg.expirationTime);
     removeUnselectedVariants($root, assignments, cfg.selectedClass);
     reportThroughCallbacks(assignments, cfg.storage, cfg.onVariantChosen, cfg.onConversion);
@@ -131,7 +131,9 @@ window.sabot = function(){
       warningFn: cfg.warningFn || defaultErrorLogger,
 
       onVariantChosen: cfg.onVariantChosen || pleaseRegister(cfg, 'onVariantChosen'),
-      onConversion: cfg.onConversion || pleaseRegister(cfg, 'onConversion')
+      onConversion: cfg.onConversion || pleaseRegister(cfg, 'onConversion'),
+
+      conditions: {}
     };
   }
 
@@ -179,10 +181,12 @@ ObjectStorage.prototype = {
 },{}],5:[function(require,module,exports){
 module.exports = parseTests;
 
-var WEIGHT_REGEX = /\((.*?)\)/;
+var EXTRAS_REGEX = /\((.*?)\)/;
 
-function parseTests($rootElement, raiseWarning) {
+function parseTests($rootElement, raiseWarning, conditionMap) {
   var metaElements = $rootElement.find("meta[type='ab-test']");
+  raiseWarning = raiseWarning || function(w) { console.error(w); };
+  conditionMap = conditionMap || {};
 
   var tests = metaElements.toArray().map(function(node) {
     var $meta = $(node);
@@ -194,7 +198,7 @@ function parseTests($rootElement, raiseWarning) {
 
       return {
         name: parseName($meta.data('name')),
-        variants: parseVariants($meta.data('variants')),
+        variants: parseVariants($meta.data('variants'), conditionMap),
         conversion: parseConversion($meta.data('conversion-event'))
       };
     } catch(e) {
@@ -217,16 +221,29 @@ function parseName(testName) {
 }
 
 // Parses the data-variants attribute into a list of variants with weights.
-function parseVariants(attributeText) {
+function parseVariants(attributeText, conditionMap) {
   var variants = attributeText.split(",").map(function(variantText) {
-    // try to find the weight, if it was defined
-    var weightMatch = WEIGHT_REGEX.exec(variantText);
-    var weight = weightMatch ? parseFloat(trim(weightMatch[1])) : 1;
+    // the name of the variant is whatever is left after removing the extra info, trimmed of whitespace
+    var name = trim(variantText.replace(EXTRAS_REGEX, ''));
+
+    // do we have extra info?
+    var extraMatch = EXTRAS_REGEX.exec(variantText);
+    var extras = extraMatch ? extraMatch[1].split(":").map(trim) : [];
+
+    // extract the weight
+    var weight = extras.length ? parseFloat(trim(extras[0])) : 1;
     if (isNaN(weight) || (weight <= 0))
       throw new Error("Incorrect weight provided: " + variantText);
 
-    // the name of the variant is whatever is left after removing the weight, trimmed of whitespace
-    var name = trim(variantText.replace(WEIGHT_REGEX, ''));
+    // any conditions?
+    var conditionNames = extras.slice(1);
+    var conditions = conditionNames.map(function(cName) {
+      var condition = conditionMap[cName];
+      if (!condition) {
+        throw new Error("Variant specification: '" + variantText + "' uses unknown condition '" + cName + "'.");
+      }
+      return condition;
+    });
 
     // check if the name is valid
     if (!isCorrectIdentifier(name)) {
@@ -234,7 +251,7 @@ function parseVariants(attributeText) {
     }
 
     // done!
-    return {name: name, weight: weight};
+    return {name: name, weight: weight, conditions: conditions};
   });
   return normalizeWeights(variants);
 }
@@ -246,7 +263,7 @@ function normalizeWeights(variants) {
     .reduce(function(total, weight) { return total + weight; }, 0.0);
 
   return variants.map(function(v) {
-    return {name: v.name, weight: v.weight / totalWeight};
+    return {name: v.name, weight: v.weight / totalWeight, conditions: v.conditions};
   });
 }
 
