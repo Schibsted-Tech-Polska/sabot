@@ -76,8 +76,6 @@ describe("Test parsing", function() {
     var parsedConditions = tests[0].variants.map(function(v) { return v.conditions });
     var aConditions = parsedConditions[0], bConditions = parsedConditions[1], cConditions = parsedConditions[2];
 
-    console.log(parsedConditions);
-
     assert.deepEqual(aConditions, [conditions['logged-in']]);
     assert.deepEqual(bConditions, []);
     assert.deepEqual(cConditions, [conditions.foo]);

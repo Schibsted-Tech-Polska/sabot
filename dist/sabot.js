@@ -133,7 +133,7 @@ window.sabot = function(){
       onVariantChosen: cfg.onVariantChosen || pleaseRegister(cfg, 'onVariantChosen'),
       onConversion: cfg.onConversion || pleaseRegister(cfg, 'onConversion'),
 
-      conditions: {}
+      conditions: cfg.conditions || {}
     };
   }
 

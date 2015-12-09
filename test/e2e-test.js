@@ -32,7 +32,11 @@ describe("Sabot", function() {
 
       warningFn: function(w) { warnings.push(w); },
       onVariantChosen: record(reportedChoices),
-      onConversion: record(reportedConversions)
+      onConversion: record(reportedConversions),
+
+      conditions: {
+        alwaysTrue: function() { return true; }
+      }
     });
 
     // trigger a conversion
