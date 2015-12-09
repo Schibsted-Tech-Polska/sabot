@@ -17,10 +17,12 @@ function assignUserToVariants(tests, storage, randomizer, validityTimeInSeconds)
   tests.map(function(test) {
     var previous = assignments[test.name];
     if (previous) {
-      // check if the saved variant actually exists in this test
+      // check if the saved variant actually exists in this test, and is still applicable
       var variantExists = test.variants.some(function(v) {
-        return v.name == previous.pick;
+        var nameMatches = (v.name == previous.pick);
+        return nameMatches && (variantIsApplicable(v));
       });
+
       // already assigned for the test, we're good
       if (variantExists)
         return;
@@ -45,15 +47,20 @@ function generateNewAssignment(test, randomizer, validForSec) {
   var pick;
   do {
     pick = pickVariantRandomly(test.variants, randomizer);
-    var allConditionsCheckOut = (pick.conditions || []).every(function(condition) {
-      return condition();
-    });
-  } while (!allConditionsCheckOut);
+  } while (!variantIsApplicable(pick));
 
   return {
     pick: pick.name,
     expires: (new Date()).getTime() + validForSec * 1000
   };
+}
+
+// Checks if all conditions specified on the test pass.
+function variantIsApplicable(variant) {
+  var conditions = variant.conditions || [];
+  return conditions.every(function(condition) {
+    return condition();
+  });
 }
 
 // Removes all assignment entries that have an 'expired' property in the past.

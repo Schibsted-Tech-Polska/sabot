@@ -30,7 +30,7 @@ describe("Assigning user to variants", function() {
         {name: 'c-b', weight: 0.5, conditions: [function() { return true; }]}
       ]
     }
-  ]
+  ];
 
   it("should assign according to weights correctly", function() {
     var random = mockRandom([0.9, 0.1]);
@@ -149,4 +149,16 @@ describe("Assigning user to variants", function() {
     assert.equal(assignments['c-test'], 'c-b');
   });
 
+  it("should pick a new assignment if the conditions for a stored one no longer pass", function() {
+    var random = mockRandom([0.6]);
+    var storage = mockObjectStorage({
+      sabotTestAssignments: {
+        'c-test': {pick: 'c-a', expires: tomorrow}
+      }
+    });
+
+    var assignments = sabot.assignUserToVariants(conditionTests, storage, random, expireInAWeek);
+
+    assert.equal(assignments['c-test'], 'c-b');
+  });
 });
