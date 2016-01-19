@@ -192,14 +192,22 @@ function parseTests($rootElement, raiseWarning, conditionMap) {
     var $meta = $(node);
 
     try {
-      var everythingProvided = $meta.data('name') && $meta.data('variants') && $meta.data('conversion-event');
+      var everythingProvided = $meta.data('name') && $meta.data('variants')
+        && ($meta.data('conversion-event') || $meta.data('conversion-event-global'));
       if (!everythingProvided)
-        throw new Error("data-name, data-variants and data-conversion-event have to be provided for each test.");
+        throw new Error("data-name, data-variants and data-conversion-event(-global) have to be provided for each test.");
+
+      var conversion;
+      if ($meta.data('conversion-event-global')) {
+        conversion = parseConversion($meta.data('conversion-event-global'), true);
+      } else {
+        conversion = parseConversion($meta.data('conversion-event'), false);
+      }
 
       return {
         name: parseName($meta.data('name')),
         variants: parseVariants($meta.data('variants'), conditionMap),
-        conversion: parseConversion($meta.data('conversion-event'))
+        conversion: conversion
       };
     } catch(e) {
       raiseWarning("Error parsing test '" + $meta.data('name') + "': " + e.message.toString());
@@ -268,14 +276,15 @@ function normalizeWeights(variants) {
 }
 
 // Parses the data-conversion-event into an object.
-function parseConversion(attributeText) {
+function parseConversion(attributeText, global) {
   var parts = attributeText.split("|");
   if (parts.length != 2)
-    throw new Error("data-conversion-event should be in the form of 'selector|event', found: '" + attributeText + "'.");
+    throw new Error("The conversion event should be in the form of 'selector|event', found: '" + attributeText + "'.");
 
   return {
     selector: parts[0],
-    event: parts[1]
+    event: parts[1],
+    global: !!global
   };
 }
 
@@ -335,7 +344,8 @@ function registerConversionListeners($root, tests, storage) {
       return;
     }
 
-    var eventBinder = domBinder($container, conversion.event);
+    var $bindTo = conversion.global ? $root : $container;
+    var eventBinder = domBinder($bindTo, conversion.event);
     var callback = createConversionCallback(conversion.selector, testName, variantName, eventBinder, storage);
     eventBinder.register(callback);
   });

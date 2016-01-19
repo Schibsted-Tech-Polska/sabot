@@ -6,6 +6,10 @@ describe("Conversions", function() {
     {
       name: 'colorful',
       conversion: {selector: '.button', event: 'click'}
+    },
+    {
+      name: 'globalful',
+      conversion: {selector: '.global-button', event: 'click', global: true}
     }
   ];
 
@@ -54,6 +58,20 @@ describe("Conversions", function() {
     $root.find(".button").get(0).click();
 
     assert.equal(storage.getItem('sabotOutstandingConversions').length, 1);
+  });
+
+  it("should report conversions based on global events correctly", function() {
+    var $root = $(testHTML);
+
+    var storage = mockObjectStorage({});
+    sabot.registerConversionListeners($root, tests, storage);
+
+    $('body').append($root);
+    $root.find(".global-button").get(0).click();
+
+    assert.deepEqual(storage.getItem(CONVERSIONS), [
+      {test: 'globalful', variant: 'whatever'}
+    ]);
   });
 
   it("should report conversion from child element clicks", function() {

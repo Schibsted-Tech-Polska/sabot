@@ -3,7 +3,7 @@ describe("Test parsing", function() {
     "<meta type='ab-test' " +
       "data-name='very-important-test' " +
       "data-variants='pretty(75%),ugly-1(12.5%),ugly-2(12.5%)' " +
-      "data-conversion-event='a|click'>" +
+      "data-conversion-event-global='a|click'>" +
     "<meta type='ab-test' " +
       "data-name='second-test' " +
       "data-variants='first,second' " +
@@ -41,8 +41,8 @@ describe("Test parsing", function() {
   it("should parse conversion events correctly", function() {
     var conversions = tests.map(function(t) { return t.conversion; });
     assert.deepEqual(conversions, [
-      {event: 'click', selector: 'a'},
-      {event: 'click', selector: 'button.submit'}
+      {event: 'click', selector: 'a', global: true},
+      {event: 'click', selector: 'button.submit', global: false}
     ]);
   });
 
