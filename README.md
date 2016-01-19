@@ -41,7 +41,7 @@ First, you have to set up a test with a `<meta>` tag.
 * **data-conversion-event** - a selector and a DOM event that will say "successful conversion" - the example means
   "whenever somebody clicks on an element with class 'button'". You can use any JQuery-compatible selector as the
   first part, and any DOM event as the second.
-  
+
 Once you have a test set up, variants are trivial to do:
 
 ```html
@@ -74,3 +74,23 @@ sabot({
 ```
 
 And that's it - you should be set up for your A/B tests!
+
+## Local vs global conversion events
+
+By default, the listener looking for conversion events will only listen to events **from inside the data-ab containers**. If you want to listen to events happenning anywhere in the document, it's a bit different:
+
+```html
+  <meta type="ab-test" 
+        data-name="does-video-improve-conversions"             
+        data-variants="with(10%), without(90%)"
+        data-conversion-event-global=".buy|click">
+        
+  <div data-ab="does-video-improve-conversions:with">
+    <video ...>
+  </div>
+  <div data-ab="does-video-improve-conversions:without"></div>
+  
+  <a class="buy">Buy!</a>
+```
+
+Note that **data-conversion-event-global** is used instead of data-conversion-event - this ensures that events coming from the top-level <a> will be captured properly.
