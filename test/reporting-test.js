@@ -16,6 +16,21 @@ describe("Reporting ", function() {
     assert.deepEqual(gatheredInfo, assignments);
   });
 
+  it("should not issue any callbacks if we can't write to storage", function() {
+    var assignments = {
+      'test-1': '1b',
+      'test-2': '2c'
+    };
+    var storage = mockObjectStorage({});
+    var called = false;
+    function trackingCallback() { called = true; }
+
+    storage.writesAreFailing = true;
+    sabot.reportThroughCallbacks(assignments, storage, trackingCallback, function(){});
+
+    assert.ok(!called);
+  });
+
   it("should report outstanding conversions", function() {
     var storage = mockObjectStorage({
       'sabotOutstandingConversions': [

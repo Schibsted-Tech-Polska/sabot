@@ -158,11 +158,18 @@ module.exports = ObjectStorage;
 
 function ObjectStorage(storage) {
   this.storage = storage;
+  this.writesAreFailing = false;
 }
 ObjectStorage.prototype = {
   setItem: function(key, object) {
-    return this.storage.setItem(key, JSON.stringify(object));
+    try {
+      return this.storage.setItem(key, JSON.stringify(object));
+    } catch(e) {
+      this.writesAreFailing = true;
+      console.log("[Sabot] Couldn't write to local storage, A/B test assignments/conversions will not be reported.");
+    }
   },
+
   getItem: function(key) {
     var storedString = this.storage.getItem(key);
     if (storedString) {
@@ -410,6 +417,14 @@ module.exports = reportThroughCallbacks;
 var STORED_CONVERSIONS = require('./constants').STORED_CONVERSIONS;
 
 function reportThroughCallbacks(assignments, storage, onVariantChosen, onConversion) {
+  // if we can't rely on the local storage (e.g. private mode on Safari)
+  // we skip reporting completely in order not to skew the data.
+  // if we can't write to local storage, test assignments would still report,
+  // but conversions wouldn't, low-balling the conversion rate
+  if (storage.writesAreFailing) {
+    return;
+  }
+
   // report which variants were loaded
   Object.keys(assignments).map(function(test) {
     onVariantChosen(test, assignments[test]);
