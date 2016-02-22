@@ -104,6 +104,8 @@ window.sabot = function(){
   var reportThroughCallbacks = main.reportThroughCallbacks = require('./report-through-callbacks');
   var registerConversionListeners = main.registerConversionListeners = require('./register-conversion-listeners');
 
+  main.ObjectStorage = ObjectStorage; // access to class for tests, mainly
+
   return main;
 
   function main(cfg) {
@@ -162,6 +164,8 @@ function ObjectStorage(storage) {
 }
 ObjectStorage.prototype = {
   setItem: function(key, object) {
+    if (!this.storage) return; // turn into no-op if there is no localStorage available
+
     try {
       return this.storage.setItem(key, JSON.stringify(object));
     } catch(e) {
@@ -171,6 +175,8 @@ ObjectStorage.prototype = {
   },
 
   getItem: function(key) {
+    if (!this.storage) return; // turn into no-op if there is no localStorage available
+
     var storedString = this.storage.getItem(key);
     if (storedString) {
       try {
