@@ -1,6 +1,6 @@
 {
   "name": "sabot",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "repository": "git@github.org:krajzeg/sabot.git",
   "private": true,
   "scripts": {
