@@ -121,10 +121,11 @@ window.sabot = function(){
   }
 
   function sanitizeConfig(cfg) {
+
     return {
       rootElement: cfg.rootElement || 'html',
 
-      storage: new ObjectStorage(cfg.storage || window.localStorage),
+      storage: new ObjectStorage(cfg.storage || defaultStorage()),
       randomizer: cfg.randomizer || Math.random.bind(Math),
 
       expirationTime: cfg.expirationTime || 7 * 24 * 3600,
@@ -144,6 +145,15 @@ window.sabot = function(){
     warningFn("Missing callback for A/B testing - please register '" + functionName + "'.");
 
     return function() {
+    }
+  }
+
+  function defaultStorage() {
+    // to get around security errors and such
+    try {
+      return window.localStorage;
+    } catch(e) {
+      return undefined;
     }
   }
 
@@ -177,7 +187,12 @@ ObjectStorage.prototype = {
   getItem: function(key) {
     if (!this.storage) return; // turn into no-op if there is no localStorage available
 
-    var storedString = this.storage.getItem(key);
+    try {
+      var storedString = this.storage.getItem(key);
+    } catch(e) {
+      return undefined;
+    }
+
     if (storedString) {
       try {
         return JSON.parse(storedString);
